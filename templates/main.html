@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        #subscription, #query, #results {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input, button {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        button {
+            border: none;
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        a {
+            padding: 10px;
+            background-color: #f00;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        img {
+            width: 100px;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ username }}!</h1>
+
+
+    <div id="subscription">
+        <h2>Your Subscriptions</h2>
+        {% for subscription in subscriptions %}
+        
+        <div>
+            <p>{{ subscription.music_title }} by {{ subscription.artist }} ({{ subscription.year }})</p>
+            <img src="{{ subscription.image_url }}" alt="Artist Image">
+            <form action="/remove-subscription" method="post">
+                <input type="hidden" name="music_title" value="{{ subscription.music_title }}">
+                <button type="submit">Remove</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <div id="query">
+        <h2>Search for Music</h2>
+        <form method="post" action="/query">
+            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="artist" placeholder="Artist">
+            <input type="text" name="year" placeholder="Year">
+            <button type="submit">Query</button>
+        </form>
+    </div>
+
+    <div id="results">
+        <h2>Query Results</h2>
+        {% if results %}
+            {% for result in results %}
+            <div>
+                <p>{{ result.title }} by {{ result.artist }} ({{ result.year }})</p>
+                <img src="{{ result.img_url }}" alt="Artist Image">
+                <form action="/subscribe" method="post">
+                    <input type="hidden" name="music_title" value="{{ result.title }}">
+                    <input type="hidden" name="artist" value="{{ result.artist }}">
+                    <input type="hidden" name="image_url" value="{{ result.image_url }}">
+                    <input type="hidden" name="year" value="{{ result.year }}">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No result is retrieved. Please query again.</p>
+        {% endif %}
+    </div>
+
+    <!-- Logout Link -->
+    <a href="/logout">Logout</a>
+
+</body>
+</html>
